@@ -1,0 +1,55 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>QRExfil</title>
+    <meta name="description" content="qrexfil">
+    <style>
+        #video, #canvas {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <video width=250 height=250 id='video' autoplay="true" playsinline="true"></video>
+    <canvas width=250 height=250 id='canvas'></canvas>
+    <button id='button'>ASD</button>
+    <img width=250 height=250 id='img' src=''>
+
+    <script>
+    (function() {
+        const cameraView = document.querySelector("#video");
+        const cameraOutput = document.querySelector("#canvas");
+        const context = cameraOutput.getContext('2d');
+        const btn = document.querySelector('#button')
+        const img = document.querySelector('#img')
+
+        // temp button function to capture still
+        btn.addEventListener("click", function(e) {
+            context.drawImage(cameraView, 0, 0, cameraOutput.width, cameraOutput.height);
+            var dataURI = cameraOutput.toDataURL('image/jpeg');
+            img.src = dataURI;
+        });
+
+        // possibly not needed
+        var constrants = {
+            video: {
+                facingMode: "user"
+            },
+            audio: false
+        }
+
+        // Actual magic shit with promises up the ass
+        navigator.mediaDevices.getUserMedia(constrants).then(function(stream) {
+            track = stream.getTracks()[0];
+            cameraView.srcObject = stream;
+            console.log(stream);
+        }).catch(function(err) {
+            alert(err);
+        });
+    })();
+    </script>
+</body>
+</html>
