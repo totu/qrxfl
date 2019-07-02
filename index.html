@@ -6,24 +6,34 @@
     <title>QRXfl</title>
     <meta name="description" content="qrxfl">
     <style>
+        body, video, canvas{
+            padding: 0;
+            margin: 0;
+        }
+        video, canvas {
+            display: block;
+        }
     </style>
 </head>
 
 <body>
-    <video width=250 height=250 id='video' autoplay="true" playsinline="true"></video>
-    <canvas width=250 height=250 id='canvas'></canvas>
-    <button id='button'>ASD</button>
+    <video width=250 id='video' autoplay="true" playsinline="true"></video>
+    <canvas id='canvas'></canvas>
 
     <script>
     (function() {
-        const cameraView = document.querySelector("#video");
-        const cameraOutput = document.querySelector("#canvas");
-        const context = cameraOutput.getContext('2d');
-        const btn = document.querySelector('#button')
+        const video = document.getElementById("video");
+        const canvas = document.getElementById("canvas");
+        const context = canvas.getContext('2d');
+        video.width = document.body.offsetWidth;
 
-        // temp button function to capture still
-        btn.addEventListener("click", function(e) {
-            context.drawImage(cameraView, 0, 0, cameraOutput.width, cameraOutput.height);
+
+        // temp function to capture still
+        document.addEventListener("click", function(e) {
+            video.width = document.body.offsetWidth;
+            canvas.width = video.offsetWidth;
+            canvas.height = video.offsetHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
         });
 
         // possibly not needed
@@ -36,9 +46,7 @@
 
         // Actual magic shit with promises up the ass
         navigator.mediaDevices.getUserMedia(constrants).then(function(stream) {
-            //track = stream.getTracks()[0];
-            cameraView.srcObject = stream;
-            console.log(stream);
+            video.srcObject = stream;
         }).catch(function(err) {
             alert(err);
         });

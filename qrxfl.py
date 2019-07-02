@@ -38,15 +38,19 @@ def main():
 
     # Loop while we get images from webcamera
     while return_value:
-        qr = create_qr(str)
+        qr = create_qr(data)
         draw_image_to_window(window, qr)
         return_value, frame = webcam.read()
         img = convert_cv2_frame_to_pil_image(frame)
         detected_qr = decode(img)
         if detected_qr:
             # TODO: exfil should plug in here
-            data = detected_qr[0].data.decode('utf-8')
-            print(data)
+            #data = detected_qr[0].data.decode('utf-8')
+            #print(data)
+            for qr in detected_qr:
+                print(qr)
+                print(qr.data)
+                print(qr.data.decode('utf-8'))
 
 if __name__ == "__main__":
     main()
