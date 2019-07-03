@@ -33,7 +33,7 @@ def convert_cv2_frame_to_pil_image(frame):
 def main():
     window = Tk()
     webcam = cv2.VideoCapture(0)
-    data = 'test'
+    data = 'jotain ihan muuta'
     return_value = True
 
     # Loop while we get images from webcamera
@@ -48,9 +48,10 @@ def main():
             #data = detected_qr[0].data.decode('utf-8')
             #print(data)
             for qr in detected_qr:
-                print(qr)
-                print(qr.data)
-                print(qr.data.decode('utf-8'))
+                data = "{}asd".format(qr.data.decode('utf-8'))
+                # print(qr)
+                # print(qr.data)
+                # print(qr.data.decode('utf-8'))
 
 if __name__ == "__main__":
     main()
