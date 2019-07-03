@@ -15,7 +15,7 @@
             text-align: center;
             vertical-align: middle;
         }
-        canvas, video{
+        canvas{
             visibility: hidden;
             position: absolute;
             top: -250px;
@@ -91,6 +91,11 @@
         }).catch(function(err) {
             alert(err);
         });
+
+        // **** FOR DEBUGGING ****
+        document.addEventListener("click", function() {
+            video.style.visibility = "hidden";
+        }, false);
 
         // Start QR detection. We can't use while(true) loop since JS is shit
         captureInterval = setInterval(function() { detect_qr() }, 500);
