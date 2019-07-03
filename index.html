@@ -9,52 +9,73 @@
     <script src="./qrcode.js"></script>
     <meta name="description" content="qrxfl">
     <style>
-        body, video, canvas{
+        body, video, canvas, div{
             padding: 0;
             margin: 0;
+            text-align: center;
+            vertical-align: middle;
         }
-        canvas {
+        canvas, video{
             visibility: hidden;
             position: absolute;
             top: -250px;
+        }
+        img {
+            display: inline !important;
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
         }
     </style>
 </head>
 
 <body>
+    <!--
+        video is the live feed.
+        canvas is used to capture frame from video.
+        div is where new QR codes are drawn
+    -->
     <video width=250 height=250 id='video' autoplay="true" playsinline="true"></video>
     <canvas width=250 height=250 id='canvas'></canvas>
     <div id='qrcode'></div>
 
     <script>
     (function() {
+        // get necessary elements
         const video = document.getElementById("video");
         const canvas = document.getElementById("canvas");
         const qrcode = document.getElementById("qrcode");
+        // create drawing context for canvas
         const context = canvas.getContext('2d');
+        // setup timers and data variables
         let captureInterval = null;
         let code = null;
         let lastData = null;
-        const tmp = document.getElementById("tmp");
-        // video.width = document.body.offsetWidth;
 
+        // detector
         const detect_qr = function() {
+            // draw video frame into canvas
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            // get image buffer from canvas
             imageBuffer = context.getImageData(0, 0, 250, 250)
+            // feed it to jsQR
             let detected = jsQR(imageBuffer.data, video.offsetWidth, video.offsetHeight)
+            // if QR code was detected
             if (detected)
             {
                 data = detected.data;
+                // if we have new data
                 if (lastData != data)
                 {
+                    // clean any existing QR code off of screen
                     if (code) code.clear();
                     qrcode.innerHTML = "";
+                    // draw new QR code
                     code = new QRCode(qrcode, data);
                     lastData = data;
                 }
             }
         }
-
 
         // Options for the camera selection
         const constrants = {
