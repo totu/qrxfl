@@ -34,6 +34,7 @@
         const context = canvas.getContext('2d');
         let captureInterval = null;
         let code = null;
+        let lastData = null;
         const tmp = document.getElementById("tmp");
         // video.width = document.body.offsetWidth;
 
@@ -43,8 +44,14 @@
             let detected = jsQR(imageBuffer.data, video.offsetWidth, video.offsetHeight)
             if (detected)
             {
-                if (code) code.clear();
-                code = new QRCode(qrcode, detected.data);
+                data = detected.data;
+                if (lastData != data)
+                {
+                    if (code) code.clear();
+                    qrcode.innerHTML = "";
+                    code = new QRCode(qrcode, data);
+                    lastData = data;
+                }
             }
         }
 
