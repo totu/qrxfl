@@ -6,13 +6,14 @@
     <meta charset="utf-8">
     <title>QRXfl</title>
     <script src="./jsQR.js"></script>
+    <script src="./qrcode.js"></script>
     <meta name="description" content="qrxfl">
     <style>
         body, video, canvas{
             padding: 0;
             margin: 0;
         }
-        canvas {
+        video, canvas {
             visibility: hidden;
             position: absolute;
             top: -250px;
@@ -23,47 +24,48 @@
 <body>
     <video width=250 height=250 id='video' autoplay="true" playsinline="true"></video>
     <canvas width=250 height=250 id='canvas'></canvas>
-    <p id='tmp'>test</p>
+    <div id='qrcode'></div>
 
     <script>
     (function() {
         const video = document.getElementById("video");
         const canvas = document.getElementById("canvas");
+        const qrcode = document.getElementById("qrcode");
         const context = canvas.getContext('2d');
         let captureInterval = null;
+        let code = null;
         const tmp = document.getElementById("tmp");
         // video.width = document.body.offsetWidth;
 
         const detect_qr = function() {
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
             imageBuffer = context.getImageData(0, 0, 250, 250)
-            let code = jsQR(imageBuffer.data, video.offsetWidth, video.offsetHeight)
-            if (code)
+            let detected = jsQR(imageBuffer.data, video.offsetWidth, video.offsetHeight)
+            if (detected)
             {
-                tmp.innerHTML = code.data;
+                if (code) code.clean();
+                code = new QRCode(qrcode, detected.data);
             }
         }
 
-        captureInterval = setInterval(function() 
-        {
-            detect_qr()
-        }, 500);
 
-        // possibly not needed
-        var constrants = {
+        // Options for the camera selection
+        const constrants = {
             video: {
                 facingMode: "user"
             },
             audio: false
         }
 
-        // Actual magic shit with promises up the ass
+        // Get camera stream and feed it to video element
         navigator.mediaDevices.getUserMedia(constrants).then(function(stream) {
             video.srcObject = stream;
         }).catch(function(err) {
             alert(err);
         });
 
+        // Start QR detection. We can't use while(true) loop since JS is shit
+        captureInterval = setInterval(function() { detect_qr() }, 500);
     })();
     </script>
 </body>
