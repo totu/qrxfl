@@ -43,7 +43,7 @@
             let detected = jsQR(imageBuffer.data, video.offsetWidth, video.offsetHeight)
             if (detected)
             {
-                if (code) code.clean();
+                if (code) code.clear();
                 code = new QRCode(qrcode, detected.data);
             }
         }
